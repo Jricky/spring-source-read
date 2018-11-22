@@ -39,6 +39,11 @@ import org.springframework.lang.Nullable;
  * @see DestructionAwareBeanPostProcessor
  * @see ConfigurableBeanFactory#addBeanPostProcessor
  * @see BeanFactoryPostProcessor
+ *
+ * BeanPostProcessor是spring框架提供的扩展接口,我们可以实现它来在bean初始化前后加一些逻辑
+ * 这种方式在spring内部的话就是减少了beanFactory的负担,将更多的事情交给这些处理器来执行.
+ * 通过实现BeanPostProcessor接口,我们可以插手Bean的实例化过程,从而减轻beanFactory的负担
+ *
  */
 public interface BeanPostProcessor {
 

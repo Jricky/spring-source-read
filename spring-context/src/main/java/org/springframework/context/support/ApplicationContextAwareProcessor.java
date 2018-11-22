@@ -57,6 +57,8 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.context.MessageSourceAware
  * @see org.springframework.context.ApplicationContextAware
  * @see org.springframework.context.support.AbstractApplicationContext#refresh()
+ * ApplicationContext上下文后置处理器:为bean放一些ApplicationContext上下文的东西,当然bean需要实现对应的接口
+ * 详见:invokeAwareInterfaces()
  */
 class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
@@ -99,11 +101,18 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
+	/**
+	 * 为bean实现不同接口来提前添加不同的功能
+	 * @param bean
+	 */
 	private void invokeAwareInterfaces(Object bean) {
 		if (bean instanceof Aware) {
+			//如果Bean实现EnvironmentAware,就会给Bean设置一个ConfigurableEnvironment对象
 			if (bean instanceof EnvironmentAware) {
 				((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());
 			}
+
+			//下同
 			if (bean instanceof EmbeddedValueResolverAware) {
 				((EmbeddedValueResolverAware) bean).setEmbeddedValueResolver(this.embeddedValueResolver);
 			}

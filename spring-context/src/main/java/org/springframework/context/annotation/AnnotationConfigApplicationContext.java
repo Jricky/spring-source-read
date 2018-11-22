@@ -95,6 +95,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 		//在自己的构造方法里初始化一个读取器和一个扫描器
 		this();
 		register(annotatedClasses);
+
+		//初始化spring的环境
 		refresh();
 	}
 
