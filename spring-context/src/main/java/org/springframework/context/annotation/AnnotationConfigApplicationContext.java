@@ -68,9 +68,17 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
 	public AnnotationConfigApplicationContext() {
+		/**
+		 * 先调用父类的构造方法:
+		 * 1.DefaultResourceLoader构造方法,初始化ClassLoader
+		 * 2.AbstractApplicationContext,初始化ResourcePatternResolver
+		 * 3.GenericApplicationContext,初始化一个DefaultListableBeanFactory
+		 */
+
 		//创建一个读取注解的BeanDefinition读取器
 		//BeanDefinition(数据抽象:Bean在spring容器里的存放方式,即数据结构)
 		this.reader = new AnnotatedBeanDefinitionReader(this);
+		//不是真正的扫描对象,是为程序员提交的外部调用scan方法而设置的扫描对象
 		this.scanner = new ClassPathBeanDefinitionScanner(this);
 	}
 
@@ -174,6 +182,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 */
 	public void register(Class<?>... annotatedClasses) {
 		Assert.notEmpty(annotatedClasses, "At least one annotated class must be specified");
+		//把一个class专为BeanDefinition放入到BeanDefinitionMap中
 		this.reader.register(annotatedClasses);
 	}
 

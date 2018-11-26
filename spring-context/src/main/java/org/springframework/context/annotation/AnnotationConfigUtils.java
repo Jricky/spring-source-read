@@ -145,16 +145,29 @@ public class AnnotationConfigUtils {
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
+		//从registry(spring环境)获取到beanFactory,对工厂的内容进行一些初始化
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
 		if (beanFactory != null) {
+			//如果工厂内没有AnnotationAwareOrderComparator的话,就添加一个:解析@Order和@Priority
 			if (!(beanFactory.getDependencyComparator() instanceof AnnotationAwareOrderComparator)) {
 				beanFactory.setDependencyComparator(AnnotationAwareOrderComparator.INSTANCE);
 			}
+			//ContextAnnotationAutowireCandidateResolver提供延迟加载的功能
 			if (!(beanFactory.getAutowireCandidateResolver() instanceof ContextAnnotationAutowireCandidateResolver)) {
 				beanFactory.setAutowireCandidateResolver(new ContextAnnotationAutowireCandidateResolver());
 			}
 		}
 
+		/**
+		 * 注册spring需要的初始化类:
+		 * 1.ConfigurationClassPostProcessor放入BeanDefinitionMap中
+		 * 2.AutowiredAnnotationBeanPostProcessor
+		 * 3.RequiredAnnotationBeanPostProcessor
+		 * 4.CommonAnnotationBeanPostProcessor
+		 * 5.PersistenceAnnotationBeanPostProcessor(jpa数据源处理器)
+		 * 6.EventListenerMethodProcessor
+		 * 7.DefaultEventListenerFactory
+		 */
 		Set<BeanDefinitionHolder> beanDefs = new LinkedHashSet<>(8);
 
 		if (!registry.containsBeanDefinition(CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME)) {

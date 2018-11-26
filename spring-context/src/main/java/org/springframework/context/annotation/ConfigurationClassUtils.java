@@ -109,9 +109,21 @@ abstract class ConfigurationClassUtils {
 			}
 		}
 
+		/**
+		 * 假如没加@Configuration就现在解析其他注解,spring也认为他是一个配置类需要解析
+		 * 假如加了就直接认为他是
+		 */
+		//判断当前bean是否加了@Configuration注解
 		if (isFullConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
+		//判断是否加了其他注解
+		/**
+		 * candidateIndicators.add(Component.class.getName());
+		 * candidateIndicators.add(ComponentScan.class.getName());
+		 * candidateIndicators.add(Import.class.getName());
+		 * candidateIndicators.add(ImportResource.class.getName());
+		 */
 		else if (isLiteConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
 		}
