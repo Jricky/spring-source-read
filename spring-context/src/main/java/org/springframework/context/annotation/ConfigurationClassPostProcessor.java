@@ -262,12 +262,18 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * 来处理spring的配置Bean(解析AppConfig)
 	 */
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
+		//定义一个存放注解类的List
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		//获取所以容器中注册的BeanName
 		String[] candidateNames = registry.getBeanDefinitionNames();
 
+		/**
+		 * Full:@Configuration注解设置的常量
+		 * Lite:没有加设置的常量
+		 */
 		for (String beanName : candidateNames) {
 			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+
 			if (ConfigurationClassUtils.isFullConfigurationClass(beanDef) ||
 					ConfigurationClassUtils.isLiteConfigurationClass(beanDef)) {
 				if (logger.isDebugEnabled()) {
@@ -276,6 +282,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			}
 			//判断Bean时候加注解的BeanDefinition-->AnnotationBeanDefinition
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
+				//放入List
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
@@ -293,6 +300,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		});
 
 		// Detect any custom bean name generation strategy supplied through the enclosing application context
+
 		SingletonBeanRegistry sbr = null;
 		if (registry instanceof SingletonBeanRegistry) {
 			sbr = (SingletonBeanRegistry) registry;
@@ -315,6 +323,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
 
+		//去重,将list变为set
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {

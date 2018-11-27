@@ -10,8 +10,8 @@ public class Test {
 
 	public static void main(String[] args) {
 		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-//		UserDao userDao = context.getBean(UserDao.class);
-//		userDao.query();
+		TestDao1 testDao1 = context.getBean(TestDao1.class);
+		System.out.println(testDao1);
 
 	}
 }

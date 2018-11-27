@@ -84,6 +84,7 @@ abstract class ConfigurationClassUtils {
 			return false;
 		}
 
+		//获取注解
 		AnnotationMetadata metadata;
 		if (beanDef instanceof AnnotatedBeanDefinition &&
 				className.equals(((AnnotatedBeanDefinition) beanDef).getMetadata().getClassName())) {
@@ -111,9 +112,10 @@ abstract class ConfigurationClassUtils {
 
 		/**
 		 * 假如没加@Configuration就现在解析其他注解,spring也认为他是一个配置类需要解析
-		 * 假如加了就直接认为他是
+		 * 假如加了就直接认为他是一个配置类
 		 */
 		//判断当前bean是否加了@Configuration注解
+		//如果存在则认为是全注解的类
 		if (isFullConfigurationCandidate(metadata)) {
 			beanDef.setAttribute(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
 		}
