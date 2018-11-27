@@ -3,7 +3,7 @@ package ming.test;
 
 import ming.AppConfig;
 import ming.dao.UserDao;
-import org.springframework.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.Enhancer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
