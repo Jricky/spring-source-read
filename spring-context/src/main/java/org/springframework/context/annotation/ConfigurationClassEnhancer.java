@@ -117,14 +117,20 @@ class ConfigurationClassEnhancer {
 
 	/**
 	 * Creates a new CGLIB {@link Enhancer} instance.
+	 * cglib
 	 */
 	private Enhancer newEnhancer(Class<?> configSuperClass, @Nullable ClassLoader classLoader) {
 		Enhancer enhancer = new Enhancer();
+		//增强父类
 		enhancer.setSuperclass(configSuperClass);
+		//增强接口,便于判断,表示一个类被增强了
 		enhancer.setInterfaces(new Class<?>[] {EnhancedConfiguration.class});
+
 		enhancer.setUseFactory(false);
 		enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
+		//生产类的策略
 		enhancer.setStrategy(new BeanFactoryAwareGeneratorStrategy(classLoader));
+		//回调过滤器,调用原方法时候,会过滤掉,来调用代理对象的方法
 		enhancer.setCallbackFilter(CALLBACK_FILTER);
 		enhancer.setCallbackTypes(CALLBACK_FILTER.getCallbackTypes());
 		return enhancer;
@@ -317,6 +323,7 @@ class ConfigurationClassEnhancer {
 		public Object intercept(Object enhancedConfigInstance, Method beanMethod, Object[] beanMethodArgs,
 					MethodProxy cglibMethodProxy) throws Throwable {
 
+			//通过代理对象enhancedConfigInstance拿到beanFactory
 			ConfigurableBeanFactory beanFactory = getBeanFactory(enhancedConfigInstance);
 			String beanName = BeanAnnotationHelper.determineBeanNameFor(beanMethod);
 

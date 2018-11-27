@@ -120,6 +120,7 @@ final class PostProcessorRegistrationDelegate {
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
 			registryProcessors.addAll(currentRegistryProcessors);
+			//执行实现类的方法
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
 			currentRegistryProcessors.clear();
 
@@ -143,7 +144,11 @@ final class PostProcessorRegistrationDelegate {
 			}
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
+			/**
+			 * 执行实现类中的第二个方法
+			 */
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
 		}
 

@@ -323,6 +323,7 @@ class ConfigurationClassParser {
 		// Process any @Import annotations
 		/**
 		 * 解析@Import注解
+		 * 判断AppConfig是否加了@Import注解,通过getImports(sourceClass)来获取到目标Class
 		 */
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
@@ -618,6 +619,8 @@ class ConfigurationClassParser {
 	 * @param currentSourceClass
 	 * @param importCandidates
 	 * @param checkForCircularImports
+	 *
+	 *
 	 */
 	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
 			Collection<SourceClass> importCandidates, boolean checkForCircularImports) {
@@ -635,7 +638,11 @@ class ConfigurationClassParser {
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
-						//1.处理importSelector
+						/**
+						 * 1.处理importSelector
+						 * 目的是导入@Import中的普通类,所以假如有导入的类中海油Import标签就会递归处理,
+						 * 而实际实现ImportSelector接口这个类是没啥用的,不会注册的,他只是一个外壳一样
+						 */
 						Class<?> candidateClass = candidate.loadClass();
 						ImportSelector selector = BeanUtils.instantiateClass(candidateClass, ImportSelector.class);
 						ParserStrategyUtils.invokeAwareMethods(
@@ -647,6 +654,7 @@ class ConfigurationClassParser {
 						else {
 							String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
 							Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames);
+							//递归处理@Import
 							processImports(configClass, currentSourceClass, importSourceClasses, false);
 						}
 					}
@@ -665,6 +673,8 @@ class ConfigurationClassParser {
 					else {
 						// Candidate class not an ImportSelector or ImportBeanDefinitionRegistrar ->
 						// process it as an @Configuration class
+						//将class放入到configurationClasses这个map中
+						//跟普通类不同,普通类扫描处理就注册了
 						this.importStack.registerImport(
 								currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
 						processConfigurationClass(candidate.asConfigClass(configClass));
