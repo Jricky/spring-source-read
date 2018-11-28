@@ -10,7 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Test {
 
 	public static void main(String[] args) {
-//		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 		Enhancer enhancer = new Enhancer();
 		//增强父类
 		enhancer.setSuperclass(UserDao.class);
