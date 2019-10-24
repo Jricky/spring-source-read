@@ -54,12 +54,20 @@ final class PostProcessorRegistrationDelegate {
 		// Invoke BeanDefinitionRegistryPostProcessors first, if any.
 		Set<String> processedBeans = new HashSet<>();
 
+		/**
+		 *  beanFactory放置spring自己的两种后置处理器，beanFactoryPostProcessors放置自定义的两种后置处理器
+		 * 1.执行spring自己的BeanDefinitionRegistryPostProcessors(按顺序)
+		 * 2.执行自定义的BeanDefinitionRegistryPostProcessors
+		 * 3.执行自定义的BeanFactoryPostProcessor
+		 * 4.执行spring自己的BeanFactoryPostProcessor(按顺序)
+		 */
+		//BeanDefinitionRegistry类型的beanFactory，就是可以操作BeanDefinition的beanFactory
+		//这种beanFactory需要先执行BeanDefinitionRegistryPostProcessors后置处理器
 		if (beanFactory instanceof BeanDefinitionRegistry) {
 			BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
-			/**
-			 * 放外部定义的BeanFactoryPostProcessor
-			 */
+			//放外部定义的BeanFactoryPostProcessor
 			List<BeanFactoryPostProcessor> regularPostProcessors = new ArrayList<>();
+			//放外部定义的BeanDefinitionRegistryPostProcessor
 			List<BeanDefinitionRegistryPostProcessor> registryProcessors = new ArrayList<>();
 
 			for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) {
@@ -144,21 +152,19 @@ final class PostProcessorRegistrationDelegate {
 			}
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
-			/**
-			 * 执行实现类中的第二个方法
-			 */
+			//执行自定义的BeanDefinitionRegistryPostProcessor后置处理器的方法
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
-
+			//执行自定义的beanFactory后置处理器的方法
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
-		}
-
-		else {
+		} else {
 			// Invoke factory processors registered with the context instance.
+			//普通的beanFactory,就直接执行,他不会有BeanDefinitionRegistryPostProcessor后置处理器
 			invokeBeanFactoryPostProcessors(beanFactoryPostProcessors, beanFactory);
 		}
 
 		// Do not initialize FactoryBeans here: We need to leave all regular beans
 		// uninitialized to let the bean factory post-processors apply to them!
+		//执行beanFactory自己的BeanFactoryPostProcessor后置处理器
 		String[] postProcessorNames =
 				beanFactory.getBeanNamesForType(BeanFactoryPostProcessor.class, true, false);
 

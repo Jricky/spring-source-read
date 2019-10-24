@@ -142,8 +142,7 @@ public class AnnotationConfigUtils {
 	 * @return a Set of BeanDefinitionHolders, containing all bean definitions
 	 * that have actually been registered by this call
 	 */
-	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
-			BeanDefinitionRegistry registry, @Nullable Object source) {
+	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(BeanDefinitionRegistry registry, @Nullable Object source) {
 
 		//从registry(spring环境)获取到beanFactory,对工厂的内容进行一些初始化
 		DefaultListableBeanFactory beanFactory = unwrapDefaultListableBeanFactory(registry);
