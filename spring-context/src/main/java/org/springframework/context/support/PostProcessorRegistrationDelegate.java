@@ -56,10 +56,11 @@ final class PostProcessorRegistrationDelegate {
 
 		/**
 		 *  beanFactory放置spring自己的两种后置处理器，beanFactoryPostProcessors放置自定义的两种后置处理器
-		 * 1.执行spring自己的BeanDefinitionRegistryPostProcessors(按顺序)
-		 * 2.执行自定义的BeanDefinitionRegistryPostProcessors
-		 * 3.执行自定义的BeanFactoryPostProcessor
-		 * 4.执行spring自己的BeanFactoryPostProcessor(按顺序)
+		 * 1.执行自定义的BeanDefinitionRegistryPostProcessors的子接口
+		 * 2.执行spring自己的BeanDefinitionRegistryPostProcessors子接口(按顺序)
+		 * 3.执行自定义的BeanDefinitionRegistryPostProcessors和spring自己的BeanDefinitionRegistryPostProcessors的父接口
+		 * 4.执行自定义的BeanFactoryPostProcessor
+		 * 5.执行spring自己的BeanFactoryPostProcessor(按顺序)
 		 */
 		//BeanDefinitionRegistry类型的beanFactory，就是可以操作BeanDefinition的beanFactory
 		//这种beanFactory需要先执行BeanDefinitionRegistryPostProcessors后置处理器
@@ -74,6 +75,7 @@ final class PostProcessorRegistrationDelegate {
 				if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) {
 					BeanDefinitionRegistryPostProcessor registryProcessor =
 							(BeanDefinitionRegistryPostProcessor) postProcessor;
+					//执行自定义的BeanDefinitionRegistryPostProcessor的子接口
 					registryProcessor.postProcessBeanDefinitionRegistry(registry);
 					registryProcessors.add(registryProcessor);
 				}
@@ -152,7 +154,7 @@ final class PostProcessorRegistrationDelegate {
 			}
 
 			// Now, invoke the postProcessBeanFactory callback of all processors handled so far.
-			//执行自定义的BeanDefinitionRegistryPostProcessor后置处理器的方法
+			//执行自定义的BeanDefinitionRegistryPostProcessors和spring自己的BeanDefinitionRegistryPostProcessors的父接口
 			invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
 			//执行自定义的beanFactory后置处理器的方法
 			invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);

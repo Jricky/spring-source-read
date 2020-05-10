@@ -261,9 +261,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 			//
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
-		}
-
-		else {
+		} else {
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
 			//如果这个bean实例正在创建而且他是原型的那么就抛出异常
